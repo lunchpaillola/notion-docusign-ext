@@ -22,6 +22,7 @@ class Config:
     DOCUSIGN_CLIENT_SECRET = os.getenv('DOCUSIGN_CLIENT_SECRET')
     DOCUSIGN_REDIRECT_URI = os.getenv('DOCUSIGN_REDIRECT_URI')
     DOCUSIGN_AUTH_SERVER = os.getenv('DOCUSIGN_AUTH_SERVER', 'account-d.docusign.com')
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 class DevelopmentConfig(Config):
     """Development configuration"""

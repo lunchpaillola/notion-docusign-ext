@@ -1,0 +1,136 @@
+{
+  "id": "db861345-aa03-4aee-a248-5e1a28b8a673",
+  "name": "Notion to Docusign",
+  "description": {
+    "short": "Transform Notion documents into DocuSign-ready contracts.",
+    "long": "Seamlessly convert your Notion documents into professional DocuSign contracts while preserving formatting and branding. This integration enables teams to:\n- Export Notion pages directly to DocuSign while maintaining document formatting\n\n- Map Notion database fields to DocuSign form fields automatically\n\n\n- Track document status and signature progress within Notion\n\n- Automatically archive signed documents with cloud storage integration\n\n- Access signed documents directly from your Notion workspace\n\nPerfect for teams who manage contracts and need to streamline their document workflow from creation to signature."
+  },
+  "termsOfServiceUrl": "https://www.samplecompany.com/tos",
+  "privacyUrl": "https://www.samplecompany.com/privacy-security",
+  "supportUrl": "https://www.samplecompany.com/support",
+  "publisher": {
+    "name": "Lunch Pail Labs",
+    "email": "help@lunchpaillabs.com",
+    "website": "https://addons.lunchpaillabs.com/"
+  },
+  "connections": [
+    {
+      "id": "f853056c-098b-41a2-b4ae-1d8d344c9e7f",
+      "name": "authentication",
+      "description": "Secure connection to Sample Extension App",
+      "type": "oauth2",
+      "params": {
+        "provider": "CUSTOM",
+        "clientId": "sKY8MFMcR41",
+        "clientSecret": "[omitted]",
+        "scopes": [],
+        "customConfig": {
+          "authorizationMethod": "header",
+          "authorizationParams": {
+            "prompt": "consent",
+            "access_type": "offline"
+          },
+          "authorizationUrl": "https://www.samplecompany.com/api/oauth/consent",
+          "requiredScopes": [],
+          "scopeSeparator": " ",
+          "tokenUrl": "https://www.samplecompany.com/api/oauth/token",
+          "refreshScopes": []
+        }
+      }
+    }
+  ],
+  "icon": {
+    "data": "[omitted]",
+    "mediaType": "image/png",
+    "id": "ca26fdec-b06f-49a2-8748-54d69f31a8ae"
+  },
+  "screenshots": [],
+  "extensions": [
+    {
+      "name": "My Data Archive Extension",
+      "description": "Used to archive an envelope",
+      "template": "EAP.Version1.SpecifiedArchive",
+      "actionReferences": ["My Data Archive Action"]
+    },
+    {
+      "name": "My Data Read and Data Write Extension",
+      "description": "Used in data read and write flow",
+      "template": "DataIO.Version6.DataInputOutput",
+      "actionReferences": [
+        "DataReadWrite GetTypeNames Action",
+        "DataReadWrite SearchRecords Action",
+        "DataReadWrite CreateRecord Action",
+        "DataReadWrite GetTypeDefinitions Action",
+        "DataReadWrite PatchRecord Action"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "DataReadWrite GetTypeNames Action",
+      "description": "This is a description of my GetTypeNames action",
+      "template": "DataIO.Version6.GetTypeNames",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://www.samplecompany.com/api/dataio/getTypeNames"
+      }
+    },
+    {
+      "name": "DataReadWrite SearchRecords Action",
+      "description": "This is a description of my SearchRecords action",
+      "template": "DataIO.Version6.SearchRecords",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://www.samplecompany.com/api/dataio/searchRecords"
+      }
+    },
+    {
+      "name": "DataReadWrite CreateRecord Action",
+      "description": "This is a description of my CreateRecord action",
+      "template": "DataIO.Version6.CreateRecord",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://www.samplecompany.com/api/dataio/createRecord"
+      }
+    },
+    {
+      "name": "DataReadWrite GetTypeDefinitions Action",
+      "description": "This is a description of my GetTypeDefinitions action",
+      "template": "DataIO.Version6.GetTypeDefinitions",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://www.samplecompany.com/api/dataio/getTypeDefinitions"
+      }
+    },
+    {
+      "name": "DataReadWrite PatchRecord Action",
+      "description": "This is a description of my PatchRecord action",
+      "template": "DataIO.Version6.PatchRecord",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://www.samplecompany.com/api/dataio/patchRecord"
+      }
+    },
+    {
+      "name": "My Data Archive Action",
+      "description": "This is a description of my data archive action",
+      "template": "Document.Version1.SpecifiedArchive",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://www.samplecompany.com/api/archive"
+      }
+    }
+  ],
+  "signupUrl": "https://www.samplecompany.com/signup",
+  "changelog": "",
+  "publicationRegions": ["US"],
+  "distribution": "PUBLIC",
+  "oauth": {
+    "authorization_url": "https://your-domain.com/auth/notion/authorize",
+    "token_url": "https://your-domain.com/auth/notion/callback",
+    "client_id": "${NOTION_CLIENT_ID}",
+    "client_secret": "${NOTION_CLIENT_SECRET}",
+    "redirect_uris": ["https://your-domain.com/auth/notion/callback"],
+    "scopes": [] // Notion doesn't require explicit scopes
+  }
+}
