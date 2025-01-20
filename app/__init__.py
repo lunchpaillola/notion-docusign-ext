@@ -34,8 +34,7 @@ def create_app():
         SUPABASE_KEY=os.getenv('SUPABASE_KEY')
     )
     
-    # Register oauth blueprint for both paths with unique names
-    app.register_blueprint(oauth, url_prefix='/api/oauth', name='oauth_docusign')  # For DocuSign initial request
-    app.register_blueprint(oauth, url_prefix='/api/auth', name='oauth_notion')     # For Notion callback
+    # Register oauth blueprint only once
+    app.register_blueprint(oauth, url_prefix='/api/oauth')  # All OAuth routes under /api/oauth
     
     return app 

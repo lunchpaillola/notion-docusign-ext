@@ -71,7 +71,7 @@ def oauth_authorize():
     
     return redirect(f"https://api.notion.com/v1/oauth/authorize?{urlencode(notion_params)}")
 
-@oauth.route('/notion/callback')  # This will match /api/auth/notion/callback
+@oauth.route('/notion/callback')  # Now matches /api/oauth/notion/callback
 def notion_callback():
     """Handle Notion callback"""
     print("\n=== Notion Callback Hit ===")
