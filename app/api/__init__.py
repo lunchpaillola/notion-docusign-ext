@@ -1,3 +1,3 @@
-from .routes import api
+from .oauth import oauth
 
-__all__ = ['api'] 
+__all__ = ['oauth'] 

@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, render_template, current_app, url_for, redirect, session
 from ..utils.errors import AuthError
-from ..auth.utils import (
-    generate_access_token, 
-    generate_refresh_token, 
-    refresh_token,
-    exchange_notion_code
+from ..utils.oauth_utils import (
+    exchange_notion_code,
+    generate_access_token,
+    generate_refresh_token,
+    refresh_token
 )
 from urllib.parse import urlencode
 from collections import defaultdict
@@ -71,24 +71,47 @@ def oauth_authorize():
     
     return redirect(f"https://api.notion.com/v1/oauth/authorize?{urlencode(notion_params)}")
 
-@oauth.route('/callback')
-def callback():
-    """Handle Notion callback and complete DocuSign flow"""
+@oauth.route('/notion/callback')  # This will match /api/auth/notion/callback
+def notion_callback():
+    """Handle Notion callback"""
+    print("\n=== Notion Callback Hit ===")
+    print("URL:", request.url)
+    print("Method:", request.method)
+    print("Args:", request.args)
+    
+    # Get state from URL
+    state = request.args.get('state')
+    print("State from URL:", state)
+    
+    # Debug Supabase state
+    stored_state = get_docusign_state(state)
+    print("Stored state in Supabase:", stored_state)
+    
+    if not stored_state:
+        print("❌ No state found in database!")
+        raise AuthError("Invalid state")
+    
     # Get Notion code
-    notion_code = request.args.get('code')
+    code = request.args.get('code')
+    if not code:
+        print("❌ No code in request!")
+        raise AuthError("No authorization code received from Notion")
     
-    # Exchange code for Notion token immediately
-    notion_token = exchange_notion_code(notion_code)
+    # Exchange code for access token
+    token_data = exchange_notion_code(code)
+    print("✅ Got Notion token:", token_data)
     
-    # Store Notion token in session
-    session['notion_token'] = notion_token
-    
-    # Get stored DocuSign parameters
-    docusign_params = session.get('docusign_params', {})
+    # Store tokens and workspace info in Supabase
+    store_oauth_token(
+        state=state,
+        notion_token=token_data['access_token'],
+        workspace_id=token_data.get('workspace_id'),
+        workspace_name=token_data.get('workspace_name')
+    )
     
     # Redirect back to DocuSign with our authorization code
     return redirect(
-        f"{docusign_params['redirect_uri']}?code={current_app.config['AUTHORIZATION_CODE']}&state={docusign_params['state']}"
+        f"{stored_state['params']['redirect_uri']}?code={current_app.config['AUTHORIZATION_CODE']}&state={state}"
     )
 
 @oauth.route('/token', methods=['POST'])

@@ -1,8 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from .auth.routes import auth
-from .api.routes import api
-from .api.oauth import oauth
+from .api.oauth import oauth  # Only import oauth blueprint
 from dotenv import load_dotenv
 import os
 
@@ -23,18 +21,21 @@ def create_app():
     })
     
     # Set Flask secret key for sessions
-    app.secret_key = os.getenv('JWT_SECRET_KEY')  # Using our JWT secret for Flask sessions
+    app.secret_key = os.getenv('JWT_SECRET_KEY')
     
     # Load config from environment
     app.config.update(
         AUTHORIZATION_CODE=os.getenv('AUTHORIZATION_CODE'),
         JWT_SECRET_KEY=os.getenv('JWT_SECRET_KEY'),
         OAUTH_CLIENT_ID=os.getenv('OAUTH_CLIENT_ID'),
-        OAUTH_CLIENT_SECRET=os.getenv('OAUTH_CLIENT_SECRET')
+        OAUTH_CLIENT_SECRET=os.getenv('OAUTH_CLIENT_SECRET'),
+        NOTION_REDIRECT_URI=os.getenv('NOTION_REDIRECT_URI'),
+        SUPABASE_URL=os.getenv('SUPABASE_URL'),
+        SUPABASE_KEY=os.getenv('SUPABASE_KEY')
     )
     
-    # Register blueprints with correct prefixes
-    app.register_blueprint(auth, url_prefix='/api/auth')  # This makes /notion/callback -> /api/auth/notion/callback
-    app.register_blueprint(oauth, url_prefix='/api/oauth')
+    # Register oauth blueprint for both paths with unique names
+    app.register_blueprint(oauth, url_prefix='/api/oauth', name='oauth_docusign')  # For DocuSign initial request
+    app.register_blueprint(oauth, url_prefix='/api/auth', name='oauth_notion')     # For Notion callback
     
     return app 
