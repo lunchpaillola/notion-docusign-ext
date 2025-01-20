@@ -2,7 +2,6 @@ from flask import Flask
 from flask_cors import CORS
 from .auth.routes import auth
 from .api.routes import api
-from .webhooks.routes import webhooks
 from .api.oauth import oauth
 from dotenv import load_dotenv
 import os
@@ -37,6 +36,5 @@ def create_app():
     # Register blueprints with correct prefixes
     app.register_blueprint(auth, url_prefix='/api/auth')  # This makes /notion/callback -> /api/auth/notion/callback
     app.register_blueprint(oauth, url_prefix='/api/oauth')
-    app.register_blueprint(webhooks, url_prefix='/api/webhooks')
     
     return app 
