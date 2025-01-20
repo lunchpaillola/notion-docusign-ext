@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authorization Request</title>
+</head>
+<body>
+    <h1>Authorization Request</h1>
+    <p>The application is requesting access to your DocuSign account.</p>
+    
+    <form action="{{ redirect_uri }}" method="GET">
+        <input type="hidden" name="code" value="{{ code }}">
+        {% if state %}
+        <input type="hidden" name="state" value="{{ state }}">
+        {% endif %}
+        <button type="submit">Allow Access</button>
+    </form>
+</body>
+</html> 

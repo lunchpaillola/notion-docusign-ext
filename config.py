@@ -6,23 +6,20 @@ load_dotenv()
 
 class Config:
     """Base configuration"""
-    # Flask
-    SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key')
+    # Environment
+    NODE_ENV = os.getenv('NODE_ENV', 'development')
+    PORT = int(os.getenv('PORT', 3000))
     
-    # Database
-    DATABASE_URL = os.getenv('DATABASE_URL')
+    # OAuth
+    OAUTH_CLIENT_ID = os.getenv('OAUTH_CLIENT_ID')
+    OAUTH_CLIENT_SECRET = os.getenv('OAUTH_CLIENT_SECRET')
     
-    # Notion
-    NOTION_CLIENT_ID = os.getenv('NOTION_CLIENT_ID')
-    NOTION_CLIENT_SECRET = os.getenv('NOTION_CLIENT_SECRET')
-    NOTION_REDIRECT_URI = os.getenv('NOTION_REDIRECT_URI')
-    
-    # DocuSign
-    DOCUSIGN_CLIENT_ID = os.getenv('DOCUSIGN_CLIENT_ID')
-    DOCUSIGN_CLIENT_SECRET = os.getenv('DOCUSIGN_CLIENT_SECRET')
-    DOCUSIGN_REDIRECT_URI = os.getenv('DOCUSIGN_REDIRECT_URI')
-    DOCUSIGN_AUTH_SERVER = os.getenv('DOCUSIGN_AUTH_SERVER', 'account-d.docusign.com')
+    # Security
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+    AUTHORIZATION_CODE = os.getenv('AUTHORIZATION_CODE')
+    
+    # Redirect URIs
+    NOTION_REDIRECT_URI = os.getenv('NOTION_REDIRECT_URI')
 
 class DevelopmentConfig(Config):
     """Development configuration"""

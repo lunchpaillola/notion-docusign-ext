@@ -9,25 +9,24 @@ import base64
 def get_notion_oauth_url():
     """Generate Notion OAuth URL"""
     params = {
-        'client_id': current_app.config['NOTION_CLIENT_ID'],
-        'redirect_uri': url_for('auth.notion_callback', _external=True),
+        'client_id': '181d872b-594c-80f7-9271-00379c40daa4',  # Hardcoded client ID
         'response_type': 'code',
         'owner': 'user',
-        'state': str(uuid.uuid4())  # Add state for security
+        'redirect_uri': 'https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/auth/notion/callback'  # Exact redirect URI
     }
     return f"https://api.notion.com/v1/oauth/authorize?{urlencode(params)}"
 
 def get_docusign_oauth_url():
     """Generate DocuSign OAuth URL"""
+    base_url = "https://account-d.docusign.com/oauth/auth"  # Development
+    
     params = {
         'client_id': current_app.config['DOCUSIGN_CLIENT_ID'],
         'response_type': 'code',
-        'scope': 'signature extended',  # Added extended scope
-        'redirect_uri': url_for('auth.docusign_callback', _external=True),
-        'prompt': 'consent',
-        'state': str(uuid.uuid4())  # Add state for security
+        'scope': 'signature',  # Basic scope for eSignature
+        'redirect_uri': 'https://demo.services.docusign.net/act-gateway/v1.0/oauth/callback',
     }
-    return f"https://account-d.docusign.com/oauth/auth?{urlencode(params)}"
+    return f"{base_url}?{urlencode(params)}"
 
 def exchange_notion_code(code):
     """Exchange authorization code for Notion access token"""

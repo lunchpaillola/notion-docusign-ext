@@ -1,11 +1,13 @@
-from flask import Blueprint, redirect, url_for, session, request, jsonify
+from flask import Blueprint, redirect, url_for, session, request, jsonify, render_template
 from ..utils.errors import AuthError
 from .utils import (
     get_notion_oauth_url, 
     get_docusign_oauth_url,
     exchange_notion_code,
     exchange_docusign_code,
-    refresh_token
+    refresh_token,
+    generate_access_token,
+    generate_refresh_token
 )
 import jwt
 from flask import current_app
@@ -108,4 +110,57 @@ def userinfo():
             'email': payload['email']
         })
     except jwt.InvalidTokenError:
-        raise AuthError("Invalid token") 
+        raise AuthError("Invalid token")
+
+# DocuSign Extension OAuth routes
+@auth.route('/api/oauth/consent')
+def oauth_consent():
+    """Handle DocuSign Extension consent request"""
+    redirect_uri = request.args.get('redirect_uri')
+    state = request.args.get('state')
+    
+    if not redirect_uri:
+        raise AuthError("Missing redirect URI")
+    
+    # Store in session for validation
+    session['redirect_uri'] = redirect_uri
+    session['state'] = state
+    
+    # Return consent page
+    return render_template('consent.html', 
+        redirect_uri=redirect_uri,
+        code=current_app.config['AUTHORIZATION_CODE'],
+        state=state
+    )
+
+@auth.route('/api/oauth/token', methods=['POST'])
+def oauth_token():
+    """Handle token generation and refresh for DocuSign Extension"""
+    grant_type = request.form.get('grant_type')
+    
+    if grant_type == 'authorization_code':
+        code = request.form.get('code')
+        if code != current_app.config['AUTHORIZATION_CODE']:
+            raise AuthError("Invalid authorization code")
+            
+        # Generate new tokens
+        access_token = generate_access_token()
+        refresh_token = generate_refresh_token()
+        
+        return jsonify({
+            'access_token': access_token,
+            'token_type': 'Bearer',
+            'expires_in': 3600,
+            'refresh_token': refresh_token
+        })
+        
+    elif grant_type == 'refresh_token':
+        refresh_token = request.form.get('refresh_token')
+        if not refresh_token:
+            raise AuthError("Missing refresh token")
+            
+        # Validate and refresh tokens
+        token_data = refresh_token(refresh_token)
+        return jsonify(token_data)
+        
+    raise AuthError("Invalid grant type") 

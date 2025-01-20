@@ -15,14 +15,14 @@
   },
   "connections": [
     {
-      "id": "f853056c-098b-41a2-b4ae-1d8d344c9e7f",
+      "id": "00e5e1ce-1db8-4d75-a82d-89854594dd9f",
       "name": "authentication",
       "description": "Secure connection to Sample Extension App",
       "type": "oauth2",
       "params": {
         "provider": "CUSTOM",
-        "clientId": "sKY8MFMcR41",
-        "clientSecret": "[omitted]",
+        "clientId": "181d872b-594c-80f7-9271-00379c40daa4",
+        "clientSecret": "secret_USL9LuolHTw8WX2aaW7y4cS8HBuGGhGrbiEh9ubxh24",
         "scopes": [],
         "customConfig": {
           "authorizationMethod": "header",
@@ -30,10 +30,10 @@
             "prompt": "consent",
             "access_type": "offline"
           },
-          "authorizationUrl": "https://www.samplecompany.com/api/oauth/consent",
+          "authorizationUrl": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/oauth/consent",
           "requiredScopes": [],
           "scopeSeparator": " ",
-          "tokenUrl": "https://www.samplecompany.com/api/oauth/token",
+          "tokenUrl": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/oauth/token",
           "refreshScopes": []
         }
       }
@@ -42,7 +42,7 @@
   "icon": {
     "data": "[omitted]",
     "mediaType": "image/png",
-    "id": "ca26fdec-b06f-49a2-8748-54d69f31a8ae"
+    "id": "db9a1227-d0aa-4cff-8283-7b0a7ce9963f"
   },
   "screenshots": [],
   "extensions": [
@@ -57,15 +57,33 @@
       "description": "Used in data read and write flow",
       "template": "DataIO.Version6.DataInputOutput",
       "actionReferences": [
-        "DataReadWrite GetTypeNames Action",
-        "DataReadWrite SearchRecords Action",
-        "DataReadWrite CreateRecord Action",
         "DataReadWrite GetTypeDefinitions Action",
-        "DataReadWrite PatchRecord Action"
+        "DataReadWrite CreateRecord Action",
+        "DataReadWrite GetTypeNames Action",
+        "DataReadWrite PatchRecord Action",
+        "DataReadWrite SearchRecords Action"
       ]
     }
   ],
   "actions": [
+    {
+      "name": "DataReadWrite GetTypeDefinitions Action",
+      "description": "This is a description of my GetTypeDefinitions action",
+      "template": "DataIO.Version6.GetTypeDefinitions",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/getTypeDefinitions"
+      }
+    },
+    {
+      "name": "DataReadWrite CreateRecord Action",
+      "description": "This is a description of my CreateRecord action",
+      "template": "DataIO.Version6.CreateRecord",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/createRecord"
+      }
+    },
     {
       "name": "DataReadWrite GetTypeNames Action",
       "description": "This is a description of my GetTypeNames action",
@@ -76,39 +94,21 @@
       }
     },
     {
-      "name": "DataReadWrite SearchRecords Action",
-      "description": "This is a description of my SearchRecords action",
-      "template": "DataIO.Version6.SearchRecords",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://www.samplecompany.com/api/dataio/searchRecords"
-      }
-    },
-    {
-      "name": "DataReadWrite CreateRecord Action",
-      "description": "This is a description of my CreateRecord action",
-      "template": "DataIO.Version6.CreateRecord",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://www.samplecompany.com/api/dataio/createRecord"
-      }
-    },
-    {
-      "name": "DataReadWrite GetTypeDefinitions Action",
-      "description": "This is a description of my GetTypeDefinitions action",
-      "template": "DataIO.Version6.GetTypeDefinitions",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://www.samplecompany.com/api/dataio/getTypeDefinitions"
-      }
-    },
-    {
       "name": "DataReadWrite PatchRecord Action",
       "description": "This is a description of my PatchRecord action",
       "template": "DataIO.Version6.PatchRecord",
       "connectionsReference": "authentication",
       "params": {
-        "uri": "https://www.samplecompany.com/api/dataio/patchRecord"
+        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/patchRecord"
+      }
+    },
+    {
+      "name": "DataReadWrite SearchRecords Action",
+      "description": "This is a description of my SearchRecords action",
+      "template": "DataIO.Version6.SearchRecords",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/searchRecords"
       }
     },
     {
@@ -117,20 +117,12 @@
       "template": "Document.Version1.SpecifiedArchive",
       "connectionsReference": "authentication",
       "params": {
-        "uri": "https://www.samplecompany.com/api/archive"
+        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/archive"
       }
     }
   ],
   "signupUrl": "https://www.samplecompany.com/signup",
   "changelog": "",
   "publicationRegions": ["US"],
-  "distribution": "PUBLIC",
-  "oauth": {
-    "authorization_url": "https://your-domain.com/auth/notion/authorize",
-    "token_url": "https://your-domain.com/auth/notion/callback",
-    "client_id": "${NOTION_CLIENT_ID}",
-    "client_secret": "${NOTION_CLIENT_SECRET}",
-    "redirect_uris": ["https://your-domain.com/auth/notion/callback"],
-    "scopes": [] // Notion doesn't require explicit scopes
-  }
+  "distribution": "PUBLIC"
 }
