@@ -14,11 +14,6 @@ def create_app():
     # Load config
     app.config.from_object('config.Config')
     
-    # Debug print
-    print("Loaded config:", {
-        key: value for key, value in app.config.items() 
-        if not key.startswith('_')
-    })
     
     # Set Flask secret key for sessions
     app.secret_key = os.getenv('JWT_SECRET_KEY')

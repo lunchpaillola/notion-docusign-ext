@@ -55,14 +55,11 @@ def store_docusign_state(state: str, params: Dict) -> Dict:
             'created_at': datetime.utcnow().isoformat(),
             'expires_at': (datetime.utcnow() + timedelta(hours=1)).isoformat()
         }
-        print("Attempting to store data:", data)  # Debug print
         
         result = supabase.table('docusign_states').insert(data).execute()
-        print("Supabase response:", result)  # Debug print
         return result
         
     except Exception as e:
-        print(f"Supabase error: {str(e)}")  # Debug print
         print(f"Error type: {type(e)}")
         raise
 
@@ -78,14 +75,12 @@ def get_oauth_token_by_code(code):
     """Get OAuth token using authorization code"""
     try:
         supabase = get_supabase_client()
-        print(f"\n🔍 Looking up token for code: {code}")
         
         # First try direct state lookup
         state_response = supabase.table('docusign_states')\
             .select("state")\
             .eq('authorization_code', code)\
             .execute()
-        print("State lookup response:", state_response)
         
         if not state_response.data:
             print("⚠️ No state found with authorization code")
@@ -106,7 +101,6 @@ def get_oauth_token_by_code(code):
             .select("*")\
             .eq('state', state)\
             .execute()
-        print("Token lookup response:", token_response)
         
         return token_response.data[0] if token_response.data else None
         
