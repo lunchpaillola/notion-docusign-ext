@@ -9,7 +9,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -28,25 +27,35 @@ wheels/
 
 # Virtual Environment
 venv/
+env/
 ENV/
+.env
+.venv
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# OS
 .DS_Store
-Thumbs.db
 
 # Logs
 *.log
 logs/
 
-# Database
+# Local development
+.env
+.env.local
+.env.*.local
+*.sqlite
 *.db
-*.sqlite3
+
+# ngrok
+*.pem
+.ngrok*
+
+# OS
+Thumbs.db
 
 # Generated files
 .prisma/
@@ -109,6 +118,7 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
+flask_session/
 
 # Scrapy stuff:
 .scrapy

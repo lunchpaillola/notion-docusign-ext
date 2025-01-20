@@ -15,14 +15,14 @@
   },
   "connections": [
     {
-      "id": "00e5e1ce-1db8-4d75-a82d-89854594dd9f",
+      "id": "112e842a-3203-4c7c-bff9-2a490da2d543",
       "name": "authentication",
       "description": "Secure connection to Sample Extension App",
       "type": "oauth2",
       "params": {
         "provider": "CUSTOM",
         "clientId": "181d872b-594c-80f7-9271-00379c40daa4",
-        "clientSecret": "secret_USL9LuolHTw8WX2aaW7y4cS8HBuGGhGrbiEh9ubxh24",
+        "clientSecret": "[omitted]",
         "scopes": [],
         "customConfig": {
           "authorizationMethod": "header",
@@ -30,7 +30,7 @@
             "prompt": "consent",
             "access_type": "offline"
           },
-          "authorizationUrl": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/oauth/consent",
+          "authorizationUrl": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/oauth/authorize",
           "requiredScopes": [],
           "scopeSeparator": " ",
           "tokenUrl": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/oauth/token",
@@ -42,7 +42,7 @@
   "icon": {
     "data": "[omitted]",
     "mediaType": "image/png",
-    "id": "db9a1227-d0aa-4cff-8283-7b0a7ce9963f"
+    "id": "f457883f-8df8-49f4-958b-c51b52b50875"
   },
   "screenshots": [],
   "extensions": [
@@ -59,9 +59,9 @@
       "actionReferences": [
         "DataReadWrite GetTypeDefinitions Action",
         "DataReadWrite CreateRecord Action",
-        "DataReadWrite GetTypeNames Action",
+        "DataReadWrite SearchRecords Action",
         "DataReadWrite PatchRecord Action",
-        "DataReadWrite SearchRecords Action"
+        "DataReadWrite GetTypeNames Action"
       ]
     }
   ],
@@ -85,12 +85,12 @@
       }
     },
     {
-      "name": "DataReadWrite GetTypeNames Action",
-      "description": "This is a description of my GetTypeNames action",
-      "template": "DataIO.Version6.GetTypeNames",
+      "name": "DataReadWrite SearchRecords Action",
+      "description": "This is a description of my SearchRecords action",
+      "template": "DataIO.Version6.SearchRecords",
       "connectionsReference": "authentication",
       "params": {
-        "uri": "https://www.samplecompany.com/api/dataio/getTypeNames"
+        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/searchRecords"
       }
     },
     {
@@ -103,21 +103,21 @@
       }
     },
     {
-      "name": "DataReadWrite SearchRecords Action",
-      "description": "This is a description of my SearchRecords action",
-      "template": "DataIO.Version6.SearchRecords",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/searchRecords"
-      }
-    },
-    {
       "name": "My Data Archive Action",
       "description": "This is a description of my data archive action",
       "template": "Document.Version1.SpecifiedArchive",
       "connectionsReference": "authentication",
       "params": {
         "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/archive"
+      }
+    },
+    {
+      "name": "DataReadWrite GetTypeNames Action",
+      "description": "This is a description of my GetTypeNames action",
+      "template": "DataIO.Version6.GetTypeNames",
+      "connectionsReference": "authentication",
+      "params": {
+        "uri": "https://www.samplecompany.com/api/dataio/getTypeNames"
       }
     }
   ],

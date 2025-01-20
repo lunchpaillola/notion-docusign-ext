@@ -5,9 +5,11 @@ class BaseError(Exception):
         self.status_code = status_code
         super().__init__(self.message)
 
-class AuthError(BaseError):
-    """Raised when authentication fails"""
-    pass
+class AuthError(Exception):
+    """Custom exception for authentication errors"""
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 class ValidationError(BaseError):
     """Raised when request validation fails"""

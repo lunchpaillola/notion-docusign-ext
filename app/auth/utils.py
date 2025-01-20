@@ -1,18 +1,19 @@
 from urllib.parse import urlencode
 from flask import current_app, url_for
-import jwt
+import jwt  # This is PyJWT
 import uuid
 from datetime import datetime, timedelta
 import requests
 import base64
+from ..utils.errors import AuthError
 
 def get_notion_oauth_url():
     """Generate Notion OAuth URL"""
     params = {
-        'client_id': '181d872b-594c-80f7-9271-00379c40daa4',  # Hardcoded client ID
+        'client_id': current_app.config['OAUTH_CLIENT_ID'],
+        'redirect_uri': current_app.config['NOTION_REDIRECT_URI'],
         'response_type': 'code',
-        'owner': 'user',
-        'redirect_uri': 'https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/auth/notion/callback'  # Exact redirect URI
+        'owner': 'user'
     }
     return f"https://api.notion.com/v1/oauth/authorize?{urlencode(params)}"
 
@@ -34,7 +35,7 @@ def exchange_notion_code(code):
     
     # Create credentials for Basic Auth
     auth = base64.b64encode(
-        f"{current_app.config['NOTION_CLIENT_ID']}:{current_app.config['NOTION_CLIENT_SECRET']}".encode()
+        f"{current_app.config['OAUTH_CLIENT_ID']}:{current_app.config['OAUTH_CLIENT_SECRET']}".encode()
     ).decode()
     
     headers = {
@@ -45,23 +46,24 @@ def exchange_notion_code(code):
     data = {
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': url_for('auth.notion_callback', _external=True)
+        'redirect_uri': current_app.config['NOTION_REDIRECT_URI']
     }
+    
+    print("Notion Token Exchange Request:")
+    print(f"URL: {token_url}")
+    print(f"Headers: {headers}")
+    print(f"Data: {data}")
     
     response = requests.post(token_url, json=data, headers=headers)
-    if not response.ok:
-        raise AuthError("Failed to exchange Notion code for token")
-        
-    token_data = response.json()
     
-    # Store additional Notion workspace info
-    return {
-        'access_token': token_data['access_token'],
-        'workspace_id': token_data['workspace_id'],
-        'workspace_name': token_data.get('workspace_name'),
-        'workspace_icon': token_data.get('workspace_icon'),
-        'bot_id': token_data['bot_id']
-    }
+    print("Notion Response:")
+    print(f"Status: {response.status_code}")
+    print(f"Response: {response.text}")
+    
+    if not response.ok:
+        raise AuthError(f"Failed to exchange Notion code for token: {response.text}")
+        
+    return response.json()
 
 def exchange_docusign_code(code):
     """Exchange authorization code for DocuSign access token"""

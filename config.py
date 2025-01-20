@@ -21,6 +21,15 @@ class Config:
     # Redirect URIs
     NOTION_REDIRECT_URI = os.getenv('NOTION_REDIRECT_URI')
 
+    # Database configuration
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///dev.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.getenv('SECRET_KEY')
+
+    # Add these to your existing Config class
+    SUPABASE_URL = os.getenv('SUPABASE_URL')
+    SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+
 class DevelopmentConfig(Config):
     """Development configuration"""
     DEBUG = True

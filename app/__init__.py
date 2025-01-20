@@ -14,6 +14,18 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
     
+    # Load config
+    app.config.from_object('config.Config')
+    
+    # Debug print
+    print("Loaded config:", {
+        key: value for key, value in app.config.items() 
+        if not key.startswith('_')
+    })
+    
+    # Set Flask secret key for sessions
+    app.secret_key = os.getenv('JWT_SECRET_KEY')  # Using our JWT secret for Flask sessions
+    
     # Load config from environment
     app.config.update(
         AUTHORIZATION_CODE=os.getenv('AUTHORIZATION_CODE'),
@@ -22,10 +34,9 @@ def create_app():
         OAUTH_CLIENT_SECRET=os.getenv('OAUTH_CLIENT_SECRET')
     )
     
-    # Register blueprints
-    app.register_blueprint(auth, url_prefix='/auth')
-    app.register_blueprint(api, url_prefix='/api')
-    app.register_blueprint(webhooks, url_prefix='/webhooks')
-    app.register_blueprint(oauth)
+    # Register blueprints with correct prefixes
+    app.register_blueprint(auth, url_prefix='/api/auth')  # This makes /notion/callback -> /api/auth/notion/callback
+    app.register_blueprint(oauth, url_prefix='/api/oauth')
+    app.register_blueprint(webhooks, url_prefix='/api/webhooks')
     
     return app 
