@@ -1,3 +1,10 @@
+class DataIOErrorCodes:
+    """Error codes for Data IO operations"""
+    NOT_FOUND = "NOT_FOUND"
+    BAD_REQUEST = "BAD_REQUEST"
+    INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
+    SCHEMA_RETRIEVAL_FAILED = "SCHEMA_RETRIEVAL_FAILED"
+
 class BaseError(Exception):
     """Base error class for the application"""
     def __init__(self, message, status_code=400):

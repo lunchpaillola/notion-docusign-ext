@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from .api.oauth import oauth  # Only import oauth blueprint
-from .api.dataio import dataio  # Add this import
+from .api.dataio import dataio  # Import from new location
 from dotenv import load_dotenv
 import os
 
@@ -10,7 +10,13 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": "*",
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
     
     # Load config
     app.config.from_object('config.Config')
