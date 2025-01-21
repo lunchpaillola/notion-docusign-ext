@@ -1,10 +1,16 @@
 from flask import Blueprint, request, jsonify, render_template, current_app, redirect
 from ..utils.errors import AuthError
 from ..utils.oauth_utils import exchange_notion_code
-from ..supabase_db import store_oauth_token, store_docusign_state, get_docusign_state, get_oauth_token_by_code
+from ..supabase_db import (
+    store_oauth_token, 
+    store_docusign_state, 
+    get_docusign_state, 
+    get_oauth_token_by_code
+)
 from urllib.parse import urlencode
 import jwt
 from datetime import datetime, timedelta
+import uuid
 
 oauth = Blueprint('oauth', __name__)
 
@@ -70,9 +76,9 @@ def notion_callback():
         workspace_name=token_data.get('workspace_name')
     )
     
-    # Redirect back to DocuSign with our authorization code
+    # No need to generate auth code, just use state
     return redirect(
-        f"{stored_state['params']['redirect_uri']}?code={current_app.config['AUTHORIZATION_CODE']}&state={state}"
+        f"{stored_state['params']['redirect_uri']}?code={state}&state={state}"
     )
 
 @oauth.route('/token', methods=['POST'])
@@ -81,24 +87,28 @@ def oauth_token():
     Handles token exchange and refresh requests from DocuSign.
     
     Two flows:
-    1. Authorization code exchange:
-       - DocuSign sends their code
-       - We return the stored Notion token
+    1. New installation (authorization_code):
+       - DocuSign sends code from callback
+       - We verify state and return Notion token
+       - If no token found, return error so user can authorize Notion
     
-    2. Refresh token:
+    2. Existing installation (refresh_token):
        - DocuSign sends refresh token
-       - We return the same Notion token (they don't expire)
+       - We decode and return the Notion token
     """
     grant_type = request.form.get('grant_type')
     
     if grant_type == 'authorization_code':
-        # Exchange authorization code for tokens
         code = request.form.get('code')
         token_data = get_oauth_token_by_code(code)
         
         if not token_data:
-            raise AuthError("Notion authorization required")
+            # This is a new installation that needs Notion auth
+            print("🔄 New installation - Notion authorization required")
+            raise AuthError("Please authorize Notion access first")
             
+        print(f"✅ Found existing installation for workspace: {token_data.get('workspace_name')}")
+        
         # Create refresh token that encodes the Notion token
         refresh_token = jwt.encode(
             {
@@ -113,7 +123,7 @@ def oauth_token():
             'access_token': token_data.get('notion_token'),
             'token_type': 'Bearer',
             'refresh_token': refresh_token,
-            'expires_in': 3600,  # Required by DocuSign
+            'expires_in': 3600,
             'workspace_id': token_data.get('workspace_id'),
             'workspace_name': token_data.get('workspace_name')
         })

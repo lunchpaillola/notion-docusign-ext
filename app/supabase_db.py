@@ -72,59 +72,34 @@ def get_docusign_state(state: str) -> Optional[Dict]:
     return response.data[0] if response.data else None
 
 def get_oauth_token_by_code(code):
-    """Get OAuth token using authorization code"""
+    """
+    Get OAuth token using state (code parameter is actually the state).
+    Keeping function name for compatibility.
+    """
     try:
         supabase = get_supabase_client()
-        
-        # First try direct state lookup
-        state_response = supabase.table('docusign_states')\
-            .select("state")\
-            .eq('authorization_code', code)\
-            .execute()
-        
-        if not state_response.data:
-            print("⚠️ No state found with authorization code")
-            # Try finding the most recent token
-            token_response = supabase.table('oauth_tokens')\
-                .select("*")\
-                .order('created_at', desc=True)\
-                .limit(1)\
-                .execute()
-            print("Fallback token lookup response:", token_response)
-            return token_response.data[0] if token_response.data else None
-            
-        state = state_response.data[0]['state']
-        print(f"✅ Found state: {state}")
-        
-        # Then get the token data using the state
         token_response = supabase.table('oauth_tokens')\
             .select("*")\
-            .eq('state', state)\
+            .eq('state', code)\
             .execute()
         
-        return token_response.data[0] if token_response.data else None
+        if not token_response.data:
+            print("❌ No token found for state:", code)
+            return None
+            
+        return token_response.data[0]
         
     except Exception as e:
-        print("❌ Error getting token by code:", str(e))
-        # Temporary fallback: get most recent token
-        try:
-            token_response = supabase.table('oauth_tokens')\
-                .select("*")\
-                .order('created_at', desc=True)\
-                .limit(1)\
-                .execute()
-            print("Emergency fallback token:", token_response)
-            return token_response.data[0] if token_response.data else None
-        except:
-            return None
+        print("❌ Error getting token:", str(e))
+        return None
 
-def update_docusign_state(state, authorization_code):
-    """Update DocuSign state with authorization code"""
+def update_last_used(state: str):
+    """Update the last_used timestamp for an installation"""
     try:
         supabase = get_supabase_client()
-        return supabase.table('docusign_states').update({
-            'authorization_code': authorization_code
-        }).eq('state', state).execute()
+        return supabase.table('oauth_tokens')\
+            .update({'last_used': datetime.utcnow().isoformat()})\
+            .eq('state', state)\
+            .execute()
     except Exception as e:
-        print("Error updating state:", e)
-        return None 
+        print(f"Error updating last_used: {str(e)}") 
