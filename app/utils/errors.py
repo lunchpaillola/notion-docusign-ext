@@ -17,4 +17,12 @@ class ValidationError(BaseError):
 
 class WebhookError(BaseError):
     """Raised when webhook processing fails"""
-    pass 
+    pass
+
+class DataIOError(Exception):
+    """Custom exception for Data IO errors"""
+    def __init__(self, code, message, status_code=400):
+        self.code = code
+        self.message = message
+        self.status_code = status_code
+        super().__init__(self.message) 
