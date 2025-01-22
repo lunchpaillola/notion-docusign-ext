@@ -1,8 +1,8 @@
 {
   "id": "db861345-aa03-4aee-a248-5e1a28b8a673",
-  "name": "Notion to Docusign",
+  "name": "DocuNot",
   "description": {
-    "short": "Transform Notion documents into DocuSign-ready contracts.",
+    "short": "Store DocuSign files into Notion",
     "long": "Seamlessly convert your Notion documents into professional DocuSign contracts while preserving formatting and branding. This integration enables teams to:\n- Export Notion pages directly to DocuSign while maintaining document formatting\n\n- Map Notion database fields to DocuSign form fields automatically\n\n\n- Track document status and signature progress within Notion\n\n- Automatically archive signed documents with cloud storage integration\n\n- Access signed documents directly from your Notion workspace\n\nPerfect for teams who manage contracts and need to streamline their document workflow from creation to signature."
   },
   "termsOfServiceUrl": "https://www.samplecompany.com/tos",
@@ -15,13 +15,13 @@
   },
   "connections": [
     {
-      "id": "112e842a-3203-4c7c-bff9-2a490da2d543",
+      "id": "18504532-5f8c-47f6-977b-9cdb4ef591a2",
       "name": "authentication",
       "description": "Secure connection to Sample Extension App",
       "type": "oauth2",
       "params": {
         "provider": "CUSTOM",
-        "clientId": "181d872b-594c-80f7-9271-00379c40daa4",
+        "clientId": "183d872b-594c-8083-9c0f-003734e0c4f7",
         "clientSecret": "[omitted]",
         "scopes": [],
         "customConfig": {
@@ -30,10 +30,10 @@
             "prompt": "consent",
             "access_type": "offline"
           },
-          "authorizationUrl": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/oauth/authorize",
+          "authorizationUrl": "https://0294-2605-a601-556e-3100-a47d-4087-e632-d233.ngrok-free.app/api/oauth/authorize",
           "requiredScopes": [],
           "scopeSeparator": " ",
-          "tokenUrl": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/oauth/token",
+          "tokenUrl": "https://0294-2605-a601-556e-3100-a47d-4087-e632-d233.ngrok-free.app/api/oauth/token",
           "refreshScopes": []
         }
       }
@@ -42,7 +42,7 @@
   "icon": {
     "data": "[omitted]",
     "mediaType": "image/png",
-    "id": "f457883f-8df8-49f4-958b-c51b52b50875"
+    "id": "d5e8aa30-ccf8-46c7-adbb-e634310720ba"
   },
   "screenshots": [],
   "extensions": [
@@ -51,73 +51,16 @@
       "description": "Used to archive an envelope",
       "template": "EAP.Version1.SpecifiedArchive",
       "actionReferences": ["My Data Archive Action"]
-    },
-    {
-      "name": "My Data Read and Data Write Extension",
-      "description": "Used in data read and write flow",
-      "template": "DataIO.Version6.DataInputOutput",
-      "actionReferences": [
-        "DataReadWrite GetTypeDefinitions Action",
-        "DataReadWrite CreateRecord Action",
-        "DataReadWrite SearchRecords Action",
-        "DataReadWrite PatchRecord Action",
-        "DataReadWrite GetTypeNames Action"
-      ]
     }
   ],
   "actions": [
-    {
-      "name": "DataReadWrite GetTypeDefinitions Action",
-      "description": "This is a description of my GetTypeDefinitions action",
-      "template": "DataIO.Version6.GetTypeDefinitions",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/getTypeDefinitions"
-      }
-    },
-    {
-      "name": "DataReadWrite CreateRecord Action",
-      "description": "This is a description of my CreateRecord action",
-      "template": "DataIO.Version6.CreateRecord",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/createRecord"
-      }
-    },
-    {
-      "name": "DataReadWrite SearchRecords Action",
-      "description": "This is a description of my SearchRecords action",
-      "template": "DataIO.Version6.SearchRecords",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/searchRecords"
-      }
-    },
-    {
-      "name": "DataReadWrite PatchRecord Action",
-      "description": "This is a description of my PatchRecord action",
-      "template": "DataIO.Version6.PatchRecord",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/dataio/patchRecord"
-      }
-    },
     {
       "name": "My Data Archive Action",
       "description": "This is a description of my data archive action",
       "template": "Document.Version1.SpecifiedArchive",
       "connectionsReference": "authentication",
       "params": {
-        "uri": "https://44b3-2605-a601-556e-3100-61a0-cfd-eafb-4bdd.ngrok-free.app/api/archive"
-      }
-    },
-    {
-      "name": "DataReadWrite GetTypeNames Action",
-      "description": "This is a description of my GetTypeNames action",
-      "template": "DataIO.Version6.GetTypeNames",
-      "connectionsReference": "authentication",
-      "params": {
-        "uri": "https://www.samplecompany.com/api/dataio/getTypeNames"
+        "uri": "https://0294-2605-a601-556e-3100-a47d-4087-e632-d233.ngrok-free.app/api/archive"
       }
     }
   ],
