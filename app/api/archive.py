@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from ..utils.errors import AuthError
 import base64
 import os
@@ -6,6 +6,9 @@ import json
 import requests
 from string import Template
 from datetime import datetime
+
+# Get DocuSign URL base from environment
+DOCUSIGN_URL_BASE = os.getenv('DOCUSIGN_URL_BASE', 'apps-d.docusign.com')
 
 archive = Blueprint('archive', __name__)
 
@@ -55,18 +58,12 @@ def archive_files():
             filename = file['name']
             if 'pathTemplateValues' in file:
                 for i, value in enumerate(file['pathTemplateValues']):
-                    filename = filename.replace(f"{{{{contract-id}}}}", value) if i == 0 else filename.replace(f"{{{{company}}}}", value)
+                    filename = filename.replace(f"{{{{Get Signatures.envelopeId}}}}", value) if i == 0 else filename
             
             print(f"\n=== Creating Page ===")
             print(f"Processed Filename: {filename}")
             
-            # Create page in Notion database
-            headers = {
-                'Authorization': f'Bearer {notion_token}',
-                'Notion-Version': '2022-06-28',
-                'Content-Type': 'application/json'
-            }
-            
+            # Create page first
             page_data = {
                 "parent": {"database_id": database_id},
                 "properties": {
@@ -74,13 +71,13 @@ def archive_files():
                         "title": [{"type": "text", "text": {"content": filename}}]
                     },
                     "Contract Status": {
-                        "select": {"name": data['metadata'].get('status', 'Archived')}
+                        "select": {"name": "Archived"}
                     },
                     "Archive Date": {
                         "date": {"start": datetime.now().isoformat()}
                     },
                     "Document Type": {
-                        "select": {"name": data['metadata'].get('documentType', 'Agreement')}
+                        "select": {"name": "Agreement"}
                     },
                     "File Name": {
                         "rich_text": [{"type": "text", "text": {"content": filename}}]
@@ -89,35 +86,34 @@ def archive_files():
                         "rich_text": [{"type": "text", "text": {"content": file.get('path', '')}}]
                     },
                     "Department": {
-                        "rich_text": [{"type": "text", "text": {"content": data['metadata'].get('department', '')}}]
+                        "rich_text": [{"type": "text", "text": {"content": ""}}]
+                    },
+                    "File URL": {
+                        "url": f"https://{DOCUSIGN_URL_BASE}/send/documents/details/{file.get('path', '')}"
                     }
                 }
             }
-            
-            print("\n=== Page Data ===")
-            print(json.dumps(page_data, indent=2))
+
+            # Create the page
+            headers = {
+                'Authorization': f'Bearer {notion_token}',
+                'Notion-Version': '2022-06-28',
+                'Content-Type': 'application/json'
+            }
             
             response = requests.post(
                 'https://api.notion.com/v1/pages',
                 headers=headers,
                 json=page_data
             )
-            
-            print("\n=== Notion Response ===")
-            print(f"Status Code: {response.status_code}")
-            print(f"Response: {response.text}")
-            
-            if response.status_code != 200:
-                error_data = response.json()
-                print(f"❌ Error Details:")
-                print(f"  Code: {error_data.get('code')}")
-                print(f"  Message: {error_data.get('message')}")
-                print(f"  Request ID: {error_data.get('request_id')}")
+
+            if response.status_code == 200:
+                processed_files.append(filename)
+                print(f"✅ Created page for {filename}")
+            else:
+                print(f"❌ Failed to create page: {response.text}")
                 failed_files.append(filename)
                 continue
-                
-            processed_files.append(filename)
-            print(f"✅ Created page for {filename}")
         
         # Return appropriate response based on success/failure
         if not processed_files and failed_files:
