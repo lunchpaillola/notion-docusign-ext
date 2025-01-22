@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from .api.oauth import oauth  # Only import oauth blueprint
 from .api.dataio import dataio  # Import from new location
+from .api.archive import archive  # Add this import
 from dotenv import load_dotenv
 import os
 
@@ -39,5 +40,6 @@ def create_app():
     # Register oauth blueprint only once
     app.register_blueprint(oauth, url_prefix='/api/oauth')  # All OAuth routes under /api/oauth
     app.register_blueprint(dataio, url_prefix='/api/dataio')  # Add this line
+    app.register_blueprint(archive, url_prefix='/api')  # Add this line
     
     return app 
